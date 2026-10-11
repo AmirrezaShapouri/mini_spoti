@@ -1,14 +1,21 @@
 from django.shortcuts import render
-from music.models import Song, Album, Artist, Favorite, Genre
-# Create your views here.
+
+from music.models import Album, Song
+
 
 def home(request):
+    popular_songs = Song.objects.select_related(
+        "artist",
+        "album",
+    ).order_by("-plays")[:6]
+
+    popular_albums = Album.objects.select_related(
+        "artist",
+    )[:6]
+
     context = {
-        'songs': Song.objects.all(),
-        'albums': Album.objects.all(),
-        'artists': Artist.objects.all(),
-        'favorites': Favorite.objects.all(),
-        'genres': Genre.objects.all(),
+        "popular_songs": popular_songs,
+        "popular_albums": popular_albums,
     }
 
-    return render(request, 'home.html', context)
+    return render(request, "home.html", context)
