@@ -44,16 +44,14 @@
         <p>Plays: {{ song.plays }}</p>
 
         <button
-            class="play-button"
-            type="button"
-            data-audio-url="{{ song.audio_file.url }}"
-            data-song-title="{{ song.title }}"
-            data-artist-name="{{ song.artist.name }}"
-            {% if song.cover %}
-                data-song-cover="{{ song.cover.url }}"
-            {% endif %}
+        class="play-button"
+        type="button"
+        data-song-slug="{{ song.slug }}"
+        data-audio-url="{{ song.audio_file.url }}"
+        data-song-title="{{ song.title }}"
+        data-artist-name="{{ song.artist.name }}"
         >
-            Play
+        ▶
         </button>
 
     </div>

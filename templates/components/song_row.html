@@ -19,5 +19,14 @@
             {% if song.is_favorite %}♥{% else %}♡{% endif %}
         </button>
     {% endif %}
-    <button class="row-play" type="button" aria-label="Play {{ song.title }}" data-playing="false">▶</button>
+    <button
+    class="row-play"
+    type="button"
+    data-song-slug="{{ song.slug }}"
+    data-audio-url="{{ song.audio_file.url }}"
+    data-song-title="{{ song.title }}"
+    data-artist-name="{{ song.artist.name }}"
+    >
+        ▶
+    </button>
 </article>
