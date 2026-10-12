@@ -1,33 +1,39 @@
 {% load static %}
 
-<div class="player" id="music-player">
-    <div class="player-info">
-        <div class="player-cover">
-            <img
-                src="{% static 'images/album-placeholder.svg' %}"
-                alt="Song cover"
-                class="player-cover-image"
-            >
-        </div>
+<div class="player-bar" id="music-player">
+    <div class="player-track">
+        <img
+            src="{% static 'images/album-placeholder.svg' %}"
+            alt="Song cover"
+            class="player-cover"
+        >
 
         <div class="player-track-info">
             <strong class="player-title">No song selected</strong>
-            <span class="player-artist">Select a song to play</span>
+            <span class="player-artist">Choose a song to start listening</span>
         </div>
+
+        <button
+            type="button"
+            class="like-button"
+            aria-label="Like current song"
+        >
+            ♡
+        </button>
     </div>
 
-    <div class="player-center">
-        <div class="player-controls">
+    <div class="player-controls">
+        <div class="player-buttons">
             <button
                 type="button"
-                class="player-play-button"
+                class="player-button player-play-button"
                 aria-label="Play or pause"
             >
                 ▶
             </button>
         </div>
 
-        <div class="player-timeline">
+        <div class="progress-row">
             <span class="player-current-time">0:00</span>
 
             <input
@@ -47,4 +53,8 @@
     <div class="player-extra">
         <span class="player-status">Ready to play</span>
     </div>
+
+    <form hidden>
+        {% csrf_token %}
+    </form>
 </div>

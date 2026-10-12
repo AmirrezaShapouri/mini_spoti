@@ -26,7 +26,12 @@
     data-audio-url="{{ song.audio_file.url }}"
     data-song-title="{{ song.title }}"
     data-artist-name="{{ song.artist.name }}"
+    {% if song.cover %}
+        data-song-cover="{{ song.cover.url }}"
+    {% elif song.album and song.album.cover %}
+        data-album-cover="{{ song.album.cover.url }}"
+    {% endif %}
     >
-        ▶
+    ▶
     </button>
 </article>

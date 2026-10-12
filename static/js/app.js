@@ -4,164 +4,240 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentSongSlug = null;
     let playCounted = false;
 
+    const player = document.querySelector("#music-player");
     const playerTitle = document.querySelector(".player-title");
     const playerArtist = document.querySelector(".player-artist");
+    const playerCover = document.querySelector(".player-cover");
     const playerPlayButton = document.querySelector(".player-play-button");
     const playerProgress = document.querySelector(".player-progress");
+    const currentTime = document.querySelector(".player-current-time");
+    const durationDisplay = document.querySelector(".player-duration");
+    const playerStatus = document.querySelector(".player-status");
 
-    function updatePlayer(song) {
+    if (!player) {
+        return;
+    }
+
+    function formatTime(seconds) {
+        if (!Number.isFinite(seconds) || seconds < 0) {
+            return "0:00";
+        }
+
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = Math.floor(seconds % 60);
+
+        return `${minutes}:${String(remainingSeconds).padStart(2, "0")}`;
+    }
+
+    function setStatus(message) {
+        if (playerStatus) {
+            playerStatus.textContent = message;
+        }
+    }
+
+    function updatePlayButtons() {
+        const isPlaying = !audio.paused;
+
+        document.querySelectorAll(".play-button, .row-play").forEach(button => {
+            const isCurrentSong =
+                button.dataset.songSlug === currentSongSlug;
+
+            button.dataset.playing = String(isPlaying && isCurrentSong);
+
+            if (button.classList.contains("play-button")) {
+                button.textContent =
+                    isPlaying && isCurrentSong ? "Ⅱ" : "▶";
+            }
+        });
+
+        if (playerPlayButton) {
+            playerPlayButton.textContent = isPlaying ? "Ⅱ" : "▶";
+            playerPlayButton.setAttribute(
+                "aria-label",
+                isPlaying ? "Pause" : "Play"
+            );
+        }
+    }
+
+    function updatePlayer(button) {
         if (playerTitle) {
-            playerTitle.textContent = song.title;
+            playerTitle.textContent = button.dataset.songTitle || "Unknown song";
         }
 
         if (playerArtist) {
-            playerArtist.textContent = song.artist;
+            playerArtist.textContent = button.dataset.artistName || "Unknown artist";
+        }
+
+        if (playerCover) {
+            playerCover.src =
+                button.dataset.songCover ||
+                button.dataset.albumCover ||
+                playerCover.dataset.placeholder ||
+                playerCover.src;
+        }
+
+        if (playerProgress) {
+            playerProgress.value = 0;
+        }
+
+        if (currentTime) {
+            currentTime.textContent = "0:00";
+        }
+
+        if (durationDisplay) {
+            durationDisplay.textContent = "0:00";
         }
     }
 
     async function countPlay(slug) {
-        if (playCounted) {
+        if (playCounted || !slug) {
             return;
         }
 
-        try {
-            const response = await fetch(`/music/songs/${slug}/plays/`, {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": getCookie("csrftoken"),
-                },
-            });
+        const csrfToken = document.querySelector(
+            "[name=csrfmiddlewaretoken]"
+        )?.value;
 
-            if (response.ok) {
-                playCounted = true;
+        try {
+            const response = await fetch(
+                `/music/songs/${encodeURIComponent(slug)}/plays/`,
+                {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": csrfToken || getCookie("csrftoken"),
+                        "X-Requested-With": "XMLHttpRequest"
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(`Play counter request failed: ${response.status}`);
             }
+
+            playCounted = true;
         } catch (error) {
-            console.error("Failed to update play count:", error);
+            console.error("Could not update song plays:", error);
         }
     }
 
-    function playSong(button) {
+    async function playSong(button) {
         const audioUrl = button.dataset.audioUrl;
-        const title = button.dataset.songTitle;
-        const artist = button.dataset.artistName;
         const slug = button.dataset.songSlug;
 
-        if (!audioUrl) {
+        if (!audioUrl || !slug) {
+            setStatus("Song audio is unavailable");
+            console.error("Missing audio URL or song slug", button);
             return;
         }
 
         if (currentSongSlug !== slug) {
-            audio.src = audioUrl;
+            audio.pause();
+
             currentSongSlug = slug;
             playCounted = false;
 
-            updatePlayer({
-                title: title,
-                artist: artist,
-            });
+            audio.src = audioUrl;
+            audio.load();
+
+            updatePlayer(button);
         }
 
-        audio.play();
-
-        countPlay(slug);
-        updatePlayButtons(button);
-    }
-
-    function pauseSong() {
-        audio.pause();
-        updatePlayButtons(null);
-    }
-
-    function updatePlayButtons(activeButton) {
-        document.querySelectorAll(".play-button, .row-play").forEach(button => {
-            button.dataset.playing = String(button === activeButton);
-        });
-
-        if (playerPlayButton) {
-            playerPlayButton.textContent = audio.paused ? "▶" : "Ⅱ";
+        try {
+            await audio.play();
+            setStatus("Now playing");
+            updatePlayButtons();
+        } catch (error) {
+            setStatus("Unable to play this audio");
+            console.error("Audio playback failed:", error);
         }
     }
 
-    document.querySelectorAll(".play-button, .row-play").forEach(button => {
+    document.querySelectorAll(".row-play, .play-button").forEach(button => {
         button.addEventListener("click", () => {
-            const buttonSlug = button.dataset.songSlug;
+            const isCurrentSong =
+                button.dataset.songSlug === currentSongSlug;
 
-            if (currentSongSlug === buttonSlug && !audio.paused) {
-                pauseSong();
+            if (isCurrentSong && !audio.paused) {
+                audio.pause();
             } else {
                 playSong(button);
             }
         });
     });
 
-    if (playerPlayButton) {
-        playerPlayButton.addEventListener("click", () => {
-            if (!audio.src) {
-                return;
-            }
-
-            if (audio.paused) {
-                audio.play();
-            } else {
-                audio.pause();
-            }
-        });
-    }
-
-    audio.addEventListener("play", () => {
-        updatePlayButtons(
-            document.querySelector(
-                `[data-song-slug="${currentSongSlug}"]`
-            )
-        );
-    });
-
-    audio.addEventListener("pause", () => {
-        updatePlayButtons(null);
-    });
-
-    audio.addEventListener("ended", () => {
-        updatePlayButtons(null);
-    });
-
-    audio.addEventListener("timeupdate", () => {
-        if (!playerProgress || !audio.duration) {
+    playerPlayButton?.addEventListener("click", async () => {
+        if (!audio.src) {
+            setStatus("Choose a song first");
             return;
         }
 
-        playerProgress.value =
-            (audio.currentTime / audio.duration) * 100;
+        if (audio.paused) {
+            try {
+                await audio.play();
+            } catch (error) {
+                setStatus("Unable to play this audio");
+                console.error("Audio playback failed:", error);
+            }
+        } else {
+            audio.pause();
+        }
     });
 
-    if (playerProgress) {
-        playerProgress.addEventListener("input", () => {
-            if (!audio.duration) {
-                return;
-            }
+    audio.addEventListener("playing", () => {
+        setStatus("Now playing");
+        updatePlayButtons();
+        countPlay(currentSongSlug);
+    });
 
-            audio.currentTime =
-                (playerProgress.value / 100) * audio.duration;
-        });
-    }
+    audio.addEventListener("pause", () => {
+        updatePlayButtons();
 
-    function getCookie(name) {
-        let cookieValue = null;
+        if (audio.currentTime > 0 && !audio.ended) {
+            setStatus("Paused");
+        }
+    });
 
-        if (document.cookie && document.cookie !== "") {
-            const cookies = document.cookie.split(";");
+    audio.addEventListener("loadedmetadata", () => {
+        if (durationDisplay) {
+            durationDisplay.textContent = formatTime(audio.duration);
+        }
+    });
 
-            for (let cookie of cookies) {
-                cookie = cookie.trim();
-
-                if (cookie.startsWith(name + "=")) {
-                    cookieValue = decodeURIComponent(
-                        cookie.substring(name.length + 1)
-                    );
-                    break;
-                }
-            }
+    audio.addEventListener("timeupdate", () => {
+        if (playerProgress && audio.duration) {
+            playerProgress.value =
+                (audio.currentTime / audio.duration) * 100;
         }
 
-        return cookieValue;
+        if (currentTime) {
+            currentTime.textContent = formatTime(audio.currentTime);
+        }
+    });
+
+    playerProgress?.addEventListener("input", () => {
+        if (audio.duration) {
+            audio.currentTime =
+                (Number(playerProgress.value) / 100) * audio.duration;
+        }
+    });
+
+    audio.addEventListener("ended", () => {
+        updatePlayButtons();
+        setStatus("Finished");
+    });
+
+    audio.addEventListener("error", () => {
+        setStatus("Audio file could not be loaded");
+        console.error("Audio element error:", audio.error, audio.src);
+    });
+
+    function getCookie(name) {
+        const cookie = document.cookie
+            .split("; ")
+            .find(item => item.startsWith(`${name}=`));
+
+        return cookie
+            ? decodeURIComponent(cookie.substring(name.length + 1))
+            : null;
     }
 });
