@@ -7,6 +7,10 @@
     <div class="topbar-actions">
         {% if request.user.is_authenticated %}
             <span class="text-link desktop-only">{{ request.user.username }}</span>
+            <form method="post" action="{% url 'accounts:logout' %}">
+            {% csrf_token %}
+            <button type="submit">Log out</button>
+            </form>
         {% else %}
             {# TODO: Add a named login route before linking account actions. #}
             <a href="#" class="text-link desktop-only">Log in</a>

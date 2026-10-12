@@ -1,24 +1,44 @@
+
 {% extends "base.html" %}
 
-{% block title %}Log in - Mini Spoti{% endblock %}
-{% block body_class %}auth-page{% endblock %}
+{% block content %}
+<section class="auth-container">
+    <div class="auth-card">
+        <h1>Log in to Mini Spoti</h1>
+        <p>Your music is waiting for you.</p>
 
-{% block page_layout %}
-    <div class="auth-wrapper">
-        <a href="{% url 'home' %}" class="auth-brand"><div class="brand-mark">M</div><span>Mini Spoti</span></a>
-        {% include "components/messages.html" %}
-        <div class="auth-card">
-            <h1>Welcome back</h1>
-            <p class="auth-subtitle">Log in to continue listening.</p>
-            <form class="auth-form">
-                <label>Email<input type="email" placeholder="you@example.com"></label>
-                <label>Password<input type="password" placeholder="Your password"></label>
-                <a href="#" class="forgot-link">Forgot your password?</a>
-                <button type="submit" class="button button-primary full-width">Log in</button>
-            </form>
-            <div class="auth-divider"><span>or</span></div>
-            <p class="auth-switch">Don't have an account? {# TODO: Add a named registration route. #}<a href="#">Sign up</a></p>
-        </div>
-        <a href="{% url 'home' %}" class="back-home">← Back to Mini Spoti</a>
+        <form method="post">
+            {% csrf_token %}
+
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                    </label>
+
+                    {{ field }}
+
+                    {% for error in field.errors %}
+                        <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            {% if form.non_field_errors %}
+                <div class="form-error">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <button type="submit" class="auth-submit">
+                Log in
+            </button>
+        </form>
+
+        <p class="auth-switch">
+            Don't have an account?
+            <a href="{% url 'accounts:register' %}">Sign up</a>
+        </p>
     </div>
+</section>
 {% endblock %}
