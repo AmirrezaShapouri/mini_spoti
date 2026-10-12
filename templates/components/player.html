@@ -1,0 +1,31 @@
+{% load static %}
+<div class="player-bar" id="music-player">
+    <div class="player-track">
+        <img id="player-cover" src="{% static 'images/album-placeholder.svg' %}" alt="" class="player-cover">
+        <div class="player-track-info">
+            <strong id="player-title">Midnight Drive</strong>
+            <span id="player-artist">Nova Echo</span>
+        </div>
+        <button class="like-button" type="button" aria-label="Like song">♡</button>
+    </div>
+    <div class="player-controls">
+        <div class="player-buttons">
+            <button class="player-button" type="button" aria-label="Shuffle">⤨</button>
+            <button class="player-button" type="button" aria-label="Previous">◀</button>
+            <button class="play-button" type="button" aria-label="Play">▶</button>
+            <button class="player-button" type="button" aria-label="Next">▶</button>
+            <button class="player-button" type="button" aria-label="Repeat">↻</button>
+        </div>
+        <div class="progress-row">
+            <span id="player-current-time">0:00</span>
+            <input id="player-progress" type="range" min="0" max="100" value="0" aria-label="Song progress">
+            <span id="player-duration">0:00</span>
+        </div>
+    </div>
+    <div class="player-extra">
+        <button class="player-button" type="button" aria-label="Queue">☷</button>
+        <button class="player-button" type="button" aria-label="Volume">🔊</button>
+        <input id="player-volume" class="volume-slider" type="range" min="0" max="100" value="75" aria-label="Volume">
+    </div>
+    <audio id="player-audio" preload="none"></audio>
+</div>

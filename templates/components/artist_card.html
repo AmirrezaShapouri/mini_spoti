@@ -1,0 +1,11 @@
+{% load static %}
+{# TODO: Replace the placeholder href with a named artist-detail URL when one exists. #}
+<a href="#" class="artist-card" data-detail-slug="{{ artist.slug }}">
+    {% if artist.image %}
+        <img src="{{ artist.image.url }}" alt="{{ artist.name }}">
+    {% else %}
+        <img src="{% static 'images/artist-placeholder.svg' %}" alt="">
+    {% endif %}
+    <strong>{{ artist.name }}</strong>
+    {% if artist.songs.count %}<span>{{ artist.songs.count }} songs</span>{% endif %}
+</a>

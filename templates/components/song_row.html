@@ -1,0 +1,23 @@
+{% load static %}
+<article class="song-row" data-song-slug="{{ song.slug }}" data-audio-url="{% if song.audio_file %}{{ song.audio_file.url }}{% endif %}">
+    <span class="track-number">{{ forloop.counter|stringformat:"02d" }}</span>
+    {% if song.cover %}
+        <img src="{{ song.cover.url }}" alt="{{ song.title }}" class="track-cover">
+    {% elif song.album and song.album.cover %}
+        <img src="{{ song.album.cover.url }}" alt="{{ song.album.title }}" class="track-cover">
+    {% else %}
+        <img src="{% static 'images/album-placeholder.svg' %}" alt="" class="track-cover">
+    {% endif %}
+    <div class="track-info">
+        <strong>{{ song.title }}</strong>
+        <span>{{ song.artist.name }}</span>
+    </div>
+    <span class="track-album">{% if song.album %}{{ song.album.title }}{% else %}Single{% endif %}</span>
+    <span class="track-duration">{{ song.duration_display|default:song.duration }}</span>
+    {% if not hide_favorite %}
+        <button class="heart-button{% if song.is_favorite %} liked{% endif %}" type="button" aria-label="Like {{ song.title }}" data-song-slug="{{ song.slug }}">
+            {% if song.is_favorite %}♥{% else %}♡{% endif %}
+        </button>
+    {% endif %}
+    <button class="row-play" type="button" aria-label="Play {{ song.title }}" data-playing="false">▶</button>
+</article>

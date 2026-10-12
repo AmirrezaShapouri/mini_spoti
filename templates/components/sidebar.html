@@ -1,0 +1,37 @@
+{% load static %}
+<aside class="sidebar">
+    <div class="brand">
+        <div class="brand-mark">M</div>
+        <span>Mini Spoti</span>
+    </div>
+    <nav class="main-nav" aria-label="Main navigation">
+        <a class="nav-link{% if request.resolver_match.url_name == 'home' %} active{% endif %}" href="{% url 'home' %}">
+            <span class="nav-icon">⌂</span><span>Home</span>
+        </a>
+        {# TODO: Add a named search route before linking this navigation item. #}
+        <a class="nav-link" href="#"><span class="nav-icon">⌕</span><span>Search</span></a>
+        {# TODO: Add a named favorites route before linking this navigation item. #}
+        <a class="nav-link" href="#"><span class="nav-icon">♥</span><span>Liked Songs</span></a>
+    </nav>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+        <div class="sidebar-heading">
+            <span>Your Library</span>
+            <button class="icon-button small" type="button" aria-label="Create playlist">+</button>
+        </div>
+        {# TODO: Add a named albums route before linking this navigation item. #}
+        <a class="library-item" href="#">Albums</a>
+        {# TODO: Add a named artists route before linking this navigation item. #}
+        <a class="library-item" href="#">Artists</a>
+    </div>
+    <div class="sidebar-footer">
+        {% if request.user.is_authenticated %}
+            <span class="text-link">{{ request.user.username }}</span>
+        {% else %}
+            {# TODO: Add a named login route before linking account navigation. #}
+            <a href="#" class="text-link">Log in</a>
+            {# TODO: Add a named registration route before linking account navigation. #}
+            <a href="#" class="button button-outline full-width">Sign up</a>
+        {% endif %}
+    </div>
+</aside>

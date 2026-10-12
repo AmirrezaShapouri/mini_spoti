@@ -1,0 +1,17 @@
+<header class="topbar">
+    <div class="history-buttons">
+        <button class="circle-button" type="button" aria-label="Go back">‹</button>
+        <button class="circle-button" type="button" aria-label="Go forward">›</button>
+    </div>
+    {% include "components/search_bar.html" with placeholder="What do you want to play?" %}
+    <div class="topbar-actions">
+        {% if request.user.is_authenticated %}
+            <span class="text-link desktop-only">{{ request.user.username }}</span>
+        {% else %}
+            {# TODO: Add a named login route before linking account actions. #}
+            <a href="#" class="text-link desktop-only">Log in</a>
+            {# TODO: Add a named registration route before linking account actions. #}
+            <a href="#" class="button button-primary">Sign up</a>
+        {% endif %}
+    </div>
+</header>

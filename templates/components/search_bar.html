@@ -1,0 +1,5 @@
+{# TODO: Set a named search route as the form action when the search view exists. #}
+<form class="top-search{% if search_focused %} search-focused{% endif %}" action="" method="get">
+    <span class="search-icon">⌕</span>
+    <input type="search" name="q" value="{{ request.GET.q|default:'' }}" placeholder="{{ placeholder|default:'Search songs, artists, and albums' }}" aria-label="Search"{% if search_focused %} autofocus{% endif %}>
+</form>

@@ -1,8 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Album - Mini Spoti</title><link rel="stylesheet" href="static/css/style.css"></head>
-<body>
-<div class="app-shell"><aside class="sidebar"><div class="brand"><div class="brand-mark">M</div><span>Mini Spoti</span></div><nav class="main-nav"><a class="nav-link" href="home.html"><span class="nav-icon">⌂</span>Home</a><a class="nav-link" href="search.html"><span class="nav-icon">⌕</span>Search</a><a class="nav-link" href="favorites.html"><span class="nav-icon">♥</span>Liked Songs</a></nav><div class="sidebar-divider"></div><div class="sidebar-section"><div class="sidebar-heading"><span>Your Library</span></div><a class="library-item active-library" href="albums.html">Albums</a><a class="library-item" href="artists.html">Artists</a></div><div class="sidebar-footer"><a href="login.html" class="text-link">Log in</a><a href="register.html" class="button button-outline full-width">Sign up</a></div></aside>
-<main class="main-content"><header class="topbar"><div class="history-buttons"><button class="circle-button">‹</button><button class="circle-button">›</button></div><form class="top-search" action="search.html"><span class="search-icon">⌕</span><input type="search" placeholder="Search"></form><div class="topbar-actions"><a href="login.html" class="text-link desktop-only">Log in</a><a href="register.html" class="button button-primary">Sign up</a></div></header>
-<section class="page-content"><div class="album-hero"><img src="static/images/album-placeholder.svg" class="album-hero-cover" alt="Neon Nights"><div><span class="eyebrow">ALBUM</span><h1>Neon Nights</h1><a href="artist-detail.html">Nova Echo</a><p>2026 · 10 songs · 38 min</p><div class="detail-actions"><button class="play-button large">▶</button></div></div></div><div class="content-section"><div class="song-list"><article class="song-row"><span class="track-number">01</span><img src="static/images/album-placeholder.svg" class="track-cover" alt=""><div class="track-info"><strong>Midnight Drive</strong><span>Nova Echo</span></div><span class="track-album">Neon Nights</span><span class="track-duration">3:41</span><button class="heart-button">♡</button><button class="row-play">▶</button></article><article class="song-row"><span class="track-number">02</span><img src="static/images/album-placeholder.svg" class="track-cover" alt=""><div class="track-info"><strong>City Lights</strong><span>Nova Echo</span></div><span class="track-album">Neon Nights</span><span class="track-duration">3:56</span><button class="heart-button">♡</button><button class="row-play">▶</button></article><article class="song-row"><span class="track-number">03</span><img src="static/images/album-placeholder.svg" class="track-cover" alt=""><div class="track-info"><strong>Neon Rain</strong><span>Nova Echo</span></div><span class="track-album">Neon Nights</span><span class="track-duration">4:12</span><button class="heart-button">♡</button><button class="row-play">▶</button></article></div></div></section></main></div>
-<div class="player-bar"><div class="player-track"><img src="static/images/album-placeholder.svg" class="player-cover" alt=""><div class="player-track-info"><strong>Midnight Drive</strong><span>Nova Echo</span></div><button class="like-button">♡</button></div><div class="player-controls"><div class="player-buttons"><button class="player-button">⤨</button><button class="player-button">◀</button><button class="play-button">▶</button><button class="player-button">▶</button><button class="player-button">↻</button></div><div class="progress-row"><span>0:42</span><input type="range" value="28"><span>3:41</span></div></div><div class="player-extra"><button class="player-button">☷</button><button class="player-button">🔊</button><input class="volume-slider" type="range" value="75"></div></div><script src="static/js/app.js"></script></body></html>
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ album.title }} - Mini Spoti{% endblock %}
+
+{% block content %}
+    <div class="album-hero">
+        {% if album.cover %}
+            <img src="{{ album.cover.url }}" class="album-hero-cover" alt="{{ album.title }}">
+        {% else %}
+            <img src="{% static 'images/album-placeholder.svg' %}" class="album-hero-cover" alt="">
+        {% endif %}
+        <div>
+            <span class="eyebrow">ALBUM</span>
+            <h1>{{ album.title }}</h1>
+            {% include "components/artist_card.html" with artist=album.artist %}
+            <p>{% if album.release_date %}{{ album.release_date|date:"Y" }} · {% endif %}{{ album.songs.count }} songs</p>
+            <div class="detail-actions"><button class="play-button large" type="button" aria-label="Play album">▶</button></div>
+        </div>
+    </div>
+    <div class="content-section">
+        <div class="song-list">
+            {% for song in album.songs.all %}
+                {% include "components/song_row.html" with song=song %}
+            {% empty %}
+                <p>No songs available for this album.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,145 +1,40 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - Mini Spoti</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-<div class="app-shell">
-    <aside class="sidebar">
-        <div class="brand"><div class="brand-mark">M</div><span>Mini Spoti</span></div>
-        <nav class="main-nav">
-            <a class="nav-link active" href="home.html"><span class="nav-icon">⌂</span><span>Home</span></a>
-            <a class="nav-link" href="search.html"><span class="nav-icon">⌕</span><span>Search</span></a>
-            <a class="nav-link" href="favorites.html"><span class="nav-icon">♥</span><span>Liked Songs</span></a>
-        </nav>
-        <div class="sidebar-divider"></div>
-        <div class="sidebar-section">
-            <div class="sidebar-heading"><span>Your Library</span><button class="icon-button small">+</button></div>
-            <a class="library-item" href="albums.html">Albums</a>
-            <a class="library-item" href="artists.html">Artists</a>
+{% extends "base.html" %}
+
+{% block title %}Home - Mini Spoti{% endblock %}
+
+{% block content %}
+    <div class="hero">
+        <div>
+            <span class="eyebrow">YOUR MUSIC SPACE</span>
+            <h1>Find your next<br><span>favorite song.</span></h1>
+            <p>Explore music, discover artists, and build your personal collection.</p>
+            {# The search route does not exist yet; the topbar search form remains available. #}
+            <a href="#" class="button button-primary">Explore music</a>
         </div>
-        <div class="sidebar-footer">
-            <a href="login.html" class="text-link">Log in</a>
-            <a href="register.html" class="button button-outline full-width">Sign up</a>
+        <div class="hero-art"><div class="hero-disc">♪</div></div>
+    </div>
+
+    <section class="content-section">
+        <div class="section-heading"><h2>Popular songs</h2><a href="#" class="see-all">See all</a></div>
+        {# TODO: Add a named songs route for the See all link. #}
+        <div class="song-list">
+            {% for song in popular_songs %}
+                {% include "components/song_row.html" with song=song %}
+            {% empty %}
+                <p>No songs available yet.</p>
+            {% endfor %}
         </div>
-    </aside>
+    </section>
 
-    <main class="main-content">
-        <header class="topbar">
-            <div class="history-buttons">
-                <button class="circle-button">‹</button><button class="circle-button">›</button>
-            </div>
-            <form class="top-search" action="search.html">
-                <span class="search-icon">⌕</span><input type="search" placeholder="What do you want to play?">
-            </form>
-            <div class="topbar-actions"><a href="login.html" class="text-link desktop-only">Log in</a><a href="register.html" class="button button-primary">Sign up</a></div>
-        </header>
-
-        <section class="page-content">
-            <div class="hero">
-                <div>
-                    <span class="eyebrow">YOUR MUSIC SPACE</span>
-                    <h1>Find your next<br><span>favorite song.</span></h1>
-                    <p>Explore music, discover artists, and build your personal collection.</p>
-                    <a href="search.html" class="button button-primary">Explore music</a>
-                </div>
-                <div class="hero-art"><div class="hero-disc">♪</div></div>
-            </div>
-
-            <section class="content-section">
-                <div class="section-heading"><h2>Popular songs</h2><a href="songs.html" class="see-all">See all</a></div>
-                
-<div class="song-list">
-    {% for song in popular_songs %}
-        <article class="song-row">
-            <span class="track-number">
-                {{ forloop.counter|stringformat:"02d" }}
-            </span>
-
-            {% if song.cover %}
-                <img
-                    src="{{ song.cover.url }}"
-                    alt="{{ song.title }}"
-                    class="track-cover"
-                >
-            {% elif song.album and song.album.cover %}
-                <img
-                    src="{{ song.album.cover.url }}"
-                    alt="{{ song.album.title }}"
-                    class="track-cover"
-                >
-            {% else %}
-                <img
-                    src="{% static 'images/album-placeholder.svg' %}"
-                    alt=""
-                    class="track-cover"
-                >
-            {% endif %}
-
-            <div class="track-info">
-                <strong>{{ song.title }}</strong>
-                <span>{{ song.artist.name }}</span>
-            </div>
-
-            <span class="track-album">
-                {% if song.album %}
-                    {{ song.album.title }}
-                {% else %}
-                    Single
-                {% endif %}
-            </span>
-
-            <span class="track-duration">
-                {{ song.duration_display }}
-            </span>
-        </article>
-    {% empty %}
-        <p>No songs available yet.</p>
-    {% endfor %}
-</div>
-
-            </section>
-
-            <section class="content-section">
-                <div class="section-heading"><h2>Popular albums</h2><a href="albums.html" class="see-all">See all</a></div>
-                
-<div class="card-grid">
-    {% for album in popular_albums %}
-        <article class="music-card">
-            {% if album.cover %}
-                <img
-                    src="{{ album.cover.url }}"
-                    alt="{{ album.title }}"
-                >
-            {% else %}
-                <img
-                    src="{% static 'images/album-placeholder.svg' %}"
-                    alt=""
-                >
-            {% endif %}
-
-            <strong>{{ album.title }}</strong>
-            <span>{{ album.artist.name }}</span>
-        </article>
-    {% empty %}
-        <p>No albums available yet.</p>
-    {% endfor %}
-</div>
-
-            </section>
-        </section>
-    </main>
-</div>
-
-<div class="player-bar">
-    <div class="player-track"><img src="static/images/album-placeholder.svg" alt="" class="player-cover"><div class="player-track-info"><strong>Midnight Drive</strong><span>Nova Echo</span></div><button class="like-button">♡</button></div>
-    <div class="player-controls"><div class="player-buttons"><button class="player-button">⤨</button><button class="player-button">◀</button><button class="play-button">▶</button><button class="player-button">▶</button><button class="player-button">↻</button></div><div class="progress-row"><span>0:42</span><input type="range" value="28"><span>3:41</span></div></div>
-    <div class="player-extra"><button class="player-button">☷</button><button class="player-button">🔊</button><input class="volume-slider" type="range" value="75"></div>
-</div>
-<script src="{% static 'js/app.js' %}"></script>
-</body>
-</html>
+    <section class="content-section">
+        <div class="section-heading"><h2>Popular albums</h2><a href="#" class="see-all">See all</a></div>
+        {# TODO: Add a named albums route for the See all link. #}
+        <div class="card-grid">
+            {% for album in popular_albums %}
+                {% include "components/album_card.html" with album=album %}
+            {% empty %}
+                <p>No albums available yet.</p>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}
