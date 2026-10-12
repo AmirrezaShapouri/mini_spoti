@@ -1,37 +1,86 @@
 {% extends "base.html" %}
-{% load static %}
 
 {% block title %}{{ song.title }} - Mini Spoti{% endblock %}
 
 {% block content %}
-    <div class="song-hero">
+
+<div class="song-detail">
+
+    <div class="song-detail-cover">
         {% if song.cover %}
-            <img src="{{ song.cover.url }}" class="song-hero-cover" alt="{{ song.title }}">
-        {% elif song.album and song.album.cover %}
-            <img src="{{ song.album.cover.url }}" class="song-hero-cover" alt="{{ song.album.title }}">
+            <img
+                src="{{ song.cover.url }}"
+                alt="{{ song.title }}"
+            >
         {% else %}
-            <img src="{% static 'images/album-placeholder.svg' %}" class="song-hero-cover" alt="">
+            {% load static %}
+            <img
+                src="{% static 'images/album-placeholder.svg' %}"
+                alt="{{ song.title }}"
+            >
         {% endif %}
-        <div class="song-hero-info">
-            <span class="eyebrow">SONG</span>
-            <h1>{{ song.title }}</h1>
-            {# TODO: Link to the artist detail page when its named route exists. #}
-            <a href="#">{{ song.artist.name }}</a>
-            <p>{% if song.album %}{{ song.album.title }} · {% endif %}{% if song.duration_display %}{{ song.duration_display }}{% else %}{{ song.duration }} seconds{% endif %}</p>
-            <div class="detail-actions">
-                <button class="play-button large" type="button" aria-label="Play {{ song.title }}">▶</button>
-                <button class="outline-icon-button" type="button" aria-label="Like {{ song.title }}">♡</button>
-            </div>
-        </div>
     </div>
-    <div class="content-section">
-        <div class="section-heading"><h2>More from {{ song.artist.name }}</h2></div>
-        <div class="song-list">
-            {% for related_song in related_songs %}
-                {% include "components/song_row.html" with song=related_song %}
-            {% empty %}
-                <p>No related songs available.</p>
-            {% endfor %}
-        </div>
+
+    <div class="song-detail-info">
+
+        <span class="eyebrow">Song</span>
+
+        <h1>{{ song.title }}</h1>
+
+        <p class="song-artist">
+            <a href="#">
+                {{ song.artist.name }}
+            </a>
+        </p>
+
+        {% if song.album %}
+            <p>Album: {{ song.album.title }}</p>
+        {% endif %}
+
+        {% if song.genre %}
+            <p>Genre: {{ song.genre.name }}</p>
+        {% endif %}
+
+        <p>Plays: {{ song.plays }}</p>
+
+        <button
+            class="play-button"
+            type="button"
+            data-audio-url="{{ song.audio_file.url }}"
+            data-song-title="{{ song.title }}"
+            data-artist-name="{{ song.artist.name }}"
+            {% if song.cover %}
+                data-song-cover="{{ song.cover.url }}"
+            {% endif %}
+        >
+            Play
+        </button>
+
     </div>
+
+</div>
+
+
+{% if related_songs %}
+
+<section class="related-songs">
+
+    <div class="section-header">
+        <h2>More from {{ song.artist.name }}</h2>
+    </div>
+
+    <div class="song-list">
+
+        {% for related_song in related_songs %}
+
+            {% include "components/song_row.html" with song=related_song %}
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endif %}
+
 {% endblock %}

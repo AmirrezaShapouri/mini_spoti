@@ -3,24 +3,29 @@
 {% block title %}Songs - Mini Spoti{% endblock %}
 
 {% block content %}
-    <div class="page-title">
-        <span class="eyebrow">MUSIC</span>
-        <h1>All songs</h1>
-        <p>Browse the music collection.</p>
+
+<div class="page-header">
+    <div>
+        <h1>All Songs</h1>
+        <p>Browse all available songs.</p>
     </div>
-    <div class="filter-row">
-        <button class="filter-chip active" type="button">All</button>
-        <button class="filter-chip" type="button">Pop</button>
-        <button class="filter-chip" type="button">Rock</button>
-        <button class="filter-chip" type="button">Electronic</button>
-        <button class="filter-chip" type="button">Hip Hop</button>
-    </div>
-    <div class="song-list large-list">
-        {% for song in songs %}
-            {% include "components/song_row.html" with song=song %}
-        {% empty %}
-            <p>No songs available yet.</p>
-        {% endfor %}
-    </div>
-    {% include "components/pagination.html" %}
+</div>
+
+<div class="song-list">
+
+    {% for song in songs %}
+
+        {% include "components/song_row.html" with song=song %}
+
+    {% empty %}
+
+        <div class="empty-state">
+            <h3>No songs found</h3>
+            <p>There are no songs available yet.</p>
+        </div>
+
+    {% endfor %}
+
+</div>
+
 {% endblock %}
