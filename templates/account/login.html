@@ -1,41 +1,47 @@
-
 {% extends "base.html" %}
 
 {% block content %}
-<section class="auth-container">
+<section class="auth-page">
     <div class="auth-card">
-        <h1>Log in to Mini Spoti</h1>
-        <p>Your music is waiting for you.</p>
+        <a href="{% url 'home' %}" class="auth-brand">
+            <span class="auth-brand-icon">♪</span>
+            <span>mini<span class="brand-green">spoti</span></span>
+        </a>
 
-        <form method="post">
+        <h1>Welcome back</h1>
+        <p class="auth-subtitle">Log in to continue listening to your music.</p>
+
+        <form method="post" class="auth-form">
             {% csrf_token %}
 
+            {% if form.non_field_errors %}
+                <div class="auth-errors">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
             {% for field in form %}
-                <div class="form-group">
+                <div class="auth-field">
                     <label for="{{ field.id_for_label }}">
                         {{ field.label }}
                     </label>
 
                     {{ field }}
 
-                    {% for error in field.errors %}
-                        <p class="form-error">{{ error }}</p>
-                    {% endfor %}
+                    {% if field.errors %}
+                        <div class="auth-field-error">
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
                 </div>
             {% endfor %}
-
-            {% if form.non_field_errors %}
-                <div class="form-error">
-                    {{ form.non_field_errors }}
-                </div>
-            {% endif %}
 
             <button type="submit" class="auth-submit">
                 Log in
             </button>
         </form>
 
-        <p class="auth-switch">
+        <p class="auth-footer">
             Don't have an account?
             <a href="{% url 'accounts:register' %}">Sign up</a>
         </p>

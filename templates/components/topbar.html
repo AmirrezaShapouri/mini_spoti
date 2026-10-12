@@ -1,21 +1,28 @@
 <header class="topbar">
     <div class="history-buttons">
-        <button class="circle-button" type="button" aria-label="Go back">‹</button>
-        <button class="circle-button" type="button" aria-label="Go forward">›</button>
-    </div>
-    {% include "components/search_bar.html" with placeholder="What do you want to play?" %}
-    <div class="topbar-actions">
-        {% if request.user.is_authenticated %}
-            <span class="text-link desktop-only">{{ request.user.username }}</span>
-            <form method="post" action="{% url 'accounts:logout' %}">
+<div class="nav-auth-actions">
+    {% if user.is_authenticated %}
+        <form
+            method="post"
+            action="{% url 'accounts:logout' %}"
+            class="nav-logout-form"
+        >
             {% csrf_token %}
-            <button type="submit">Log out</button>
-            </form>
-        {% else %}
-            {# TODO: Add a named login route before linking account actions. #}
-            <a href="#" class="text-link desktop-only">Log in</a>
-            {# TODO: Add a named registration route before linking account actions. #}
-            <a href="#" class="button button-primary">Sign up</a>
-        {% endif %}
-    </div>
+            <button type="submit" class="nav-logout-button">
+                <span class="nav-logout-icon" aria-hidden="true">↪</span>
+                <span>Log out</span>
+            </button>
+        </form>
+    {% else %}
+        <a href="{% url 'accounts:login' %}" class="nav-auth-link">
+            Log in
+        </a>
+        <a
+            href="{% url 'accounts:register' %}"
+            class="nav-auth-link nav-auth-register"
+        >
+            Sign up
+        </a>
+    {% endif %}
+</div>
 </header>
