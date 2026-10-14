@@ -1141,3 +1141,40 @@ a { color: inherit; text-decoration: none; }
         opacity: 1;
     }
 }
+
+/* Small favorite heart inside song rows */
+.song-row .row-favorite {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #8b8b8b;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.song-row .row-favorite .favorite-icon {
+    display: inline;
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    background: transparent;
+    color: inherit;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.song-row .row-favorite:hover {
+    background: rgba(30, 215, 96, 0.12);
+    color: #3be477;
+    transform: none;
+}
+
+.song-row .row-favorite.is-favorite {
+    color: #1ed760;
+}
