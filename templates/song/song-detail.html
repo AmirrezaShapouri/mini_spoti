@@ -11,13 +11,20 @@
             <img
                 src="{{ song.cover.url }}"
                 alt="{{ song.title }}"
-                
+                width="340"
+                height="340"
+                fetchpriority="high"
+                decoding="async"
             >
         {% else %}
             {% load static %}
             <img
                 src="{% static 'images/album-placeholder.svg' %}"
                 alt="{{ song.title }}"
+                width="340"
+                height="340"
+                fetchpriority="high"
+                decoding="async"
             >
         {% endif %}
     </div>
