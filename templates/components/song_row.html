@@ -1,87 +1,89 @@
+{% load static %}
+
 <div class="song-row">
-    <div class="song-row-main">
-        <button
-            type="button"
-            class="row-play"
-            data-audio="{{ song.audio_file.url }}"
-            data-title="{{ song.title }}"
-            data-artist="{{ song.artist.name }}"
-            data-cover="{% if song.cover %}{{ song.cover.url }}{% elif song.album and song.album.cover %}{{ song.album.cover.url }}{% endif %}"
-            aria-label="Play {{ song.title }}"
+    <span class="track-number">
+        {{ forloop.counter|default:"♫" }}
+    </span>
+
+    {% if song.cover %}
+        <img
+            class="track-cover"
+            src="{{ song.cover.url }}"
+            alt="{{ song.title }}"
+            loading="lazy"
         >
-            <span class="play-icon">▶</span>
-        </button>
+    {% elif song.album and song.album.cover %}
+        <img
+            class="track-cover"
+            src="{{ song.album.cover.url }}"
+            alt="{{ song.album.title }}"
+            loading="lazy"
+        >
+    {% else %}
+        <img
+            class="track-cover"
+            src="{% static 'images/album-placeholder.svg' %}"
+            alt=""
+            loading="lazy"
+        >
+    {% endif %}
 
-        <div class="song-cover">
-            {% if song.cover %}
-                <img
-                    src="{{ song.cover.url }}"
-                    alt="{{ song.title }}"
-                    loading="lazy"
-                >
-            {% elif song.album and song.album.cover %}
-                <img
-                    src="{{ song.album.cover.url }}"
-                    alt="{{ song.album.title }}"
-                    loading="lazy"
-                >
-            {% else %}
-                <img
-                    src="/static/images/album-placeholder.svg"
-                    alt="Default album cover"
-                    loading="lazy"
-                >
-            {% endif %}
-        </div>
-
-        <div class="song-info">
-            <a
-                href="{% url 'music:song_detail' song.slug %}"
-                class="song-title"
-            >
+    <div class="track-info">
+        <strong>
+            <a href="{% url 'music:song_detail' song.slug %}">
                 {{ song.title }}
             </a>
+        </strong>
 
-            <a
-                href="{% if song.artist.slug %}#{% else %}#{% endif %}"
-                class="song-artist"
-            >
-                {{ song.artist.name }}
-            </a>
-        </div>
+        <span>{{ song.artist.name }}</span>
     </div>
 
-    <div class="song-row-album">
+    <div class="track-album">
         {% if song.album %}
             {{ song.album.title }}
         {% else %}
-            <span class="muted-text">Single</span>
+            Single
         {% endif %}
     </div>
 
-    <div class="song-row-actions">
-        {% if user.is_authenticated %}
-            <button
-                type="button"
-                class="row-favorite{% if song.id in favorite_song_ids %} is-favorite{% endif %}"
-                data-song-slug="{{ song.slug }}"
-                aria-label="{% if song.id in favorite_song_ids %}Remove from favorites{% else %}Add to favorites{% endif %}"
-                aria-pressed="{% if song.id in favorite_song_ids %}true{% else %}false{% endif %}"
-            >
-                <span class="favorite-icon">{% if song.id in favorite_song_ids %}♥{% else %}♡{% endif %}</span>
-            </button>
-        {% else %}
-            <a
-                href="{% url 'accounts:login' %}"
-                class="row-favorite"
-                aria-label="Log in to add this song to favorites"
-            >
-                <span class="favorite-icon">♡</span>
-            </a>
-        {% endif %}
+    <span class="track-duration">
+        {{ song.duration_display }}
+    </span>
 
-        <span class="track-duration">
-            {{ song.duration_display }}
-        </span>
-    </div>
+    {% if user.is_authenticated %}
+        <button
+            type="button"
+            class="heart-button row-favorite{% if song.id in favorite_song_ids %} is-favorite{% endif %}"
+            data-song-slug="{{ song.slug }}"
+            aria-label="{% if song.id in favorite_song_ids %}Remove from favorites{% else %}Add to favorites{% endif %}"
+            aria-pressed="{% if song.id in favorite_song_ids %}true{% else %}false{% endif %}"
+        >
+            <span class="favorite-icon">{% if song.id in favorite_song_ids %}♥{% else %}♡{% endif %}</span>
+        </button>
+    {% else %}
+        <a
+            href="{% url 'accounts:login' %}"
+            class="heart-button row-favorite"
+            aria-label="Log in to add this song to favorites"
+        >
+            <span class="favorite-icon">♡</span>
+        </a>
+    {% endif %}
+
+    <button
+        type="button"
+        class="row-play"
+        data-song-slug="{{ song.slug }}"
+        data-audio-url="{{ song.audio_file.url }}"
+        data-song-title="{{ song.title }}"
+        data-artist-name="{{ song.artist.name }}"
+        {% if song.cover %}
+            data-song-cover="{{ song.cover.url }}"
+        {% elif song.album and song.album.cover %}
+            data-album-cover="{{ song.album.cover.url }}"
+        {% endif %}
+        aria-label="Play {{ song.title }}"
+    >
+        <span class="play-icon">▶</span>
+    </button>
 </div>

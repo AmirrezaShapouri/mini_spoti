@@ -243,6 +243,16 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+function getCookieFromDocument(name) {
+    const cookie = document.cookie
+        .split("; ")
+        .find(item => item.startsWith(`${name}=`));
+
+    return cookie
+        ? decodeURIComponent(cookie.substring(name.length + 1))
+        : null;
+}
+
 document.addEventListener("click", async (event) => {
     const favoriteButton = event.target.closest(".row-favorite");
 
@@ -250,13 +260,14 @@ document.addEventListener("click", async (event) => {
         return;
     }
 
-    event.preventDefault();
-
     const slug = favoriteButton.dataset.songSlug;
 
+    // Allow guest users to follow the login link.
     if (!slug) {
         return;
     }
+
+    event.preventDefault();
 
     if (favoriteButton.dataset.loading === "true") {
         return;
@@ -265,56 +276,55 @@ document.addEventListener("click", async (event) => {
     favoriteButton.dataset.loading = "true";
 
     try {
+        const csrfToken =
+            getCookieFromDocument("csrftoken") ||
+            document.querySelector(
+                "[name=csrfmiddlewaretoken]"
+            )?.value;
+
         const response = await fetch(
-            `/music/songs/${slug}/favorite/`,
+            `/music/songs/${encodeURIComponent(slug)}/favorite/`,
             {
                 method: "POST",
                 headers: {
-                    "X-CSRFToken": getCookie("csrftoken"),
+                    "X-CSRFToken": csrfToken || "",
                     "X-Requested-With": "XMLHttpRequest",
                 },
             }
         );
 
         if (!response.ok) {
-            throw new Error("Failed to update favorite.");
+            throw new Error(
+                `Favorite request failed: ${response.status}`
+            );
         }
 
         const data = await response.json();
 
-        if (data.is_favorite) {
-            favoriteButton.classList.add("is-favorite");
-
-            favoriteButton.querySelector(
-                ".favorite-icon"
-            ).textContent = "♥";
-
-            favoriteButton.setAttribute(
-                "aria-label",
-                "Remove from favorites"
-            );
-
-            favoriteButton.setAttribute(
-                "aria-pressed",
-                "true"
-            );
-        } else {
-            favoriteButton.classList.remove("is-favorite");
-
-            favoriteButton.querySelector(
-                ".favorite-icon"
-            ).textContent = "♡";
-
-            favoriteButton.setAttribute(
-                "aria-label",
-                "Add to favorites"
-            );
-
-            favoriteButton.setAttribute(
-                "aria-pressed",
-                "false"
-            );
+        if (!data.success) {
+            throw new Error("The favorite update was unsuccessful.");
         }
+
+        const isFavorite = data.is_favorite;
+        const icon = favoriteButton.querySelector(".favorite-icon");
+
+        favoriteButton.classList.toggle("is-favorite", isFavorite);
+
+        if (icon) {
+            icon.textContent = isFavorite ? "♥" : "♡";
+        }
+
+        favoriteButton.setAttribute(
+            "aria-pressed",
+            String(isFavorite)
+        );
+
+        favoriteButton.setAttribute(
+            "aria-label",
+            isFavorite
+                ? "Remove from favorites"
+                : "Add to favorites"
+        );
     } catch (error) {
         console.error("Favorite error:", error);
     } finally {

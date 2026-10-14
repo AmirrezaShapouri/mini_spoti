@@ -1116,3 +1116,28 @@ a { color: inherit; text-decoration: none; }
     pointer-events: none;
     opacity: 0.6;
 }
+
+.row-favorite {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.row-favorite:hover,
+.row-favorite.is-favorite {
+    color: var(--green);
+}
+
+.row-favorite .favorite-icon {
+    display: block;
+}
+
+@media (max-width: 760px) {
+    .song-row .row-play {
+        opacity: 1;
+    }
+}
