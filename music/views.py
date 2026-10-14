@@ -1,9 +1,9 @@
 from django.db.models import F
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render,redirect
 from django.views.decorators.http import require_POST
-
-from .models import Song
+from django.contrib.auth.decorators import login_required
+from .models import Song,Favorite
 
 
 def song_list(request):
@@ -39,4 +39,47 @@ def increment_plays(request, slug):
         {
             "plays": song.plays + 1,
         }
+    )
+
+
+@login_required
+@require_POST
+def toggle_favorite(request, slug):
+    song = get_object_or_404(Song, slug=slug)
+
+    favorite = Favorite.objects.filter(
+        user=request.user,
+        song=song,
+    ).first()
+
+    if favorite:
+        favorite.delete()
+    else:
+        Favorite.objects.create(
+            user=request.user,
+            song=song,
+        )
+
+    return redirect(request.META.get("HTTP_REFERER", "home"))
+
+
+@login_required
+def favorite_list(request):
+    favorites = (
+        Favorite.objects
+        .filter(user=request.user)
+        .select_related(
+            "song",
+            "song__artist",
+            "song__album",
+        )
+        .order_by("-created_at")
+    )
+
+    songs = [favorite.song for favorite in favorites]
+
+    return render(
+        request,
+        "favorites/favorites.html",
+        {"songs": songs},
     )

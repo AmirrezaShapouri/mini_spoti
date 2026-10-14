@@ -1,23 +1,32 @@
 {% extends "base.html" %}
 
-{% block title %}Liked Songs - Mini Spoti{% endblock %}
-
 {% block content %}
-    <div class="favorite-header">
-        <div class="favorite-icon">♥</div>
+<section class="page-section">
+    <div class="section-header">
         <div>
-            <span class="eyebrow">YOUR LIBRARY</span>
-            <h1>Liked Songs</h1>
-            <p>{{ favorite_songs|length }} songs you saved to your collection.</p>
+            <h1>Your Favorites</h1>
+            <p>Songs you have saved.</p>
         </div>
     </div>
-    <div class="action-row"><button class="button button-primary play-all" type="button">▶ Play all</button></div>
-    <div class="song-list large-list">
-        {% for song in favorite_songs %}
-            {% include "components/song_row.html" with song=song %}
-        {% empty %}
-            <p>No liked songs yet.</p>
-        {% endfor %}
-    </div>
-    {% include "components/pagination.html" %}
+
+    {% if songs %}
+        <div class="song-list">
+            {% for song in songs %}
+                {% include "components/song_row.html" with song=song %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">♡</div>
+            <h2>No favorite songs yet</h2>
+            <p>
+                Songs you like will appear here.
+            </p>
+
+            <a href="{% url 'music:song_list' %}" class="primary-button">
+                Browse Songs
+            </a>
+        </div>
+    {% endif %}
+</section>
 {% endblock %}

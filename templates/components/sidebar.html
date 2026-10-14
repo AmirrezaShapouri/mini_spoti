@@ -11,7 +11,7 @@
         {# TODO: Add a named search route before linking this navigation item. #}
         <a class="nav-link" href="#"><span class="nav-icon">⌕</span><span>Search</span></a>
         {# TODO: Add a named favorites route before linking this navigation item. #}
-        <a class="nav-link" href="#"><span class="nav-icon">♥</span><span>Liked Songs</span></a>
+        <a class="nav-link" href="{% url "music:favorite_list" %}"><span class="nav-icon">♥</span><span>Liked Songs</span></a>
     </nav>
     <div class="sidebar-divider"></div>
     <div class="sidebar-section">

@@ -15,7 +15,7 @@
     </div>
 
     <section class="content-section">
-        <div class="section-heading"><h2>Popular songs</h2><a href="#" class="see-all">See all</a></div>
+        <div class="section-heading"><h2>Popular songs</h2><a href="{% url "song_list" %}" class="see-all">See all</a></div>
         {# TODO: Add a named songs route for the See all link. #}
         <div class="song-list">
             {% for song in popular_songs %}

@@ -53,6 +53,16 @@
         >
         ▶
         </button>
+        <form
+        method="post"
+        action="{% url 'music:toggle_favorite' song.slug %}"
+        >
+        {% csrf_token %}
+
+        <button type="submit" class="favorite-button">
+        ♡ Add to Favorites
+        </button>
+        </form>
 
     </div>
 
