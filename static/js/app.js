@@ -307,11 +307,17 @@ document.addEventListener("click", async (event) => {
 
         const isFavorite = data.is_favorite;
         const icon = favoriteButton.querySelector(".favorite-icon");
+        const label = favoriteButton.querySelector(".favorite-label");
 
         favoriteButton.classList.toggle("is-favorite", isFavorite);
 
         if (icon) {
             icon.textContent = isFavorite ? "♥" : "♡";
+        }
+        if (label) {
+            label.textContent = isFavorite
+            ? "Remove from Favorites"
+            : "Add to Favorites";
         }
 
         favoriteButton.setAttribute(

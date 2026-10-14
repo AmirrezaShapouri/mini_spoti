@@ -1178,3 +1178,51 @@ a { color: inherit; text-decoration: none; }
 .song-row .row-favorite.is-favorite {
     color: #1ed760;
 }
+
+.detail-favorite-button.row-favorite {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: auto;
+    min-height: 44px;
+    height: auto;
+    padding: 0 18px;
+    border: 1px solid #404040;
+    border-radius: 999px;
+    background: #242424;
+    color: #dedede;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.4;
+    text-decoration: none;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.detail-favorite-button.row-favorite .favorite-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    background: transparent;
+    color: inherit;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.detail-favorite-button.row-favorite:hover {
+    background: #303030;
+    border-color: #1ed760;
+    color: #1ed760;
+    transform: none;
+}
+
+.detail-favorite-button.row-favorite.is-favorite {
+    border-color: rgba(30, 215, 96, 0.4);
+    color: #1ed760;
+}

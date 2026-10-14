@@ -11,6 +11,7 @@
             <img
                 src="{{ song.cover.url }}"
                 alt="{{ song.title }}"
+                
             >
         {% else %}
             {% load static %}
@@ -58,16 +59,27 @@
         >
         ▶
         </button>
-        <form
-        method="post"
-        action="{% url 'music:toggle_favorite' song.slug %}"
-        >
-        {% csrf_token %}
-
-        <button type="submit" class="favorite-button">
-        ♡ Add to Favorites
-        </button>
-        </form>
+        {% if user.is_authenticated %}
+            <button
+        type="button"
+        class="detail-favorite-button row-favorite{% if song.id in favorite_song_ids %} is-favorite{% endif %}"
+        data-song-slug="{{ song.slug }}"
+        aria-label="{% if song.id in favorite_song_ids %}Remove from favorites{% else %}Add to favorites{% endif %}"
+        aria-pressed="{% if song.id in favorite_song_ids %}true{% else %}false{% endif %}"
+            >
+        <span class="favorite-icon">{% if song.id in favorite_song_ids %}♥{% else %}♡{% endif %}</span>
+        <span class="favorite-label">{% if song.id in favorite_song_ids %}Remove from Favorites{% else %}Add to Favorites{% endif %}</span>
+            </button>
+        {% else %}
+    <a
+        href="{% url 'accounts:login' %}"
+        class="detail-favorite-button row-favorite"
+        aria-label="Log in to add this song to favorites"
+    >
+        <span class="favorite-icon">♡</span>
+        <span class="favorite-label">Log in to add to Favorites</span>
+    </a>
+{% endif %}
 
     </div>
 
