@@ -4,40 +4,62 @@
 {% block title %}{{ artist.name }} - Mini Spoti{% endblock %}
 
 {% block content %}
-    <div class="artist-hero">
+    <section class="artist-hero">
         {% if artist.image %}
-            <img src="{{ artist.image.url }}" class="artist-hero-image" alt="{{ artist.name }}">
+            <img
+                src="{{ artist.image.url }}"
+                alt="{{ artist.name }}"
+                class="artist-hero-image"
+            >
         {% else %}
-            <img src="{% static 'images/artist-placeholder.svg' %}" class="artist-hero-image" alt="">
+            <img
+                src="{% static 'images/artist-placeholder.svg' %}"
+                alt=""
+                class="artist-hero-image"
+            >
         {% endif %}
-        <div>
+
+        <div class="artist-hero-info">
             <span class="eyebrow">ARTIST</span>
             <h1>{{ artist.name }}</h1>
-            <p>{{ artist.songs.count }} songs · {{ artist.albums.count }} albums</p>
-            <div class="detail-actions">
-                <button class="play-button large" type="button" aria-label="Play {{ artist.name }}">▶</button>
-                <button class="outline-icon-button" type="button" aria-label="Follow {{ artist.name }}">♡</button>
-            </div>
+
+            {% if artist.bio %}
+                <p>{{ artist.bio }}</p>
+            {% endif %}
+
+            <p>
+                {{ songs|length }} song{{ songs|length|pluralize }}
+                ·
+                {{ albums|length }} album{{ albums|length|pluralize }}
+            </p>
         </div>
-    </div>
-    <div class="content-section">
-        <div class="section-heading"><h2>Popular</h2></div>
+    </section>
+
+    {% if albums %}
+        <section class="content-section">
+            <div class="section-heading">
+                <h2>Albums</h2>
+            </div>
+
+            <div class="card-grid">
+                {% for album in albums %}
+                    {% include "components/album_card.html" with album=album %}
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+
+    <section class="content-section">
+        <div class="section-heading">
+            <h2>Songs</h2>
+        </div>
+
         <div class="song-list">
-            {% for song in artist.songs.all %}
+            {% for song in songs %}
                 {% include "components/song_row.html" with song=song %}
             {% empty %}
-                <p>No songs available for this artist.</p>
+                <p>This artist has no songs yet.</p>
             {% endfor %}
         </div>
-    </div>
-    <div class="content-section">
-        <div class="section-heading"><h2>Albums</h2></div>
-        <div class="card-grid album-grid">
-            {% for album in artist.albums.all %}
-                {% include "components/album_card.html" with album=album %}
-            {% empty %}
-                <p>No albums available for this artist.</p>
-            {% endfor %}
-        </div>
-    </div>
+    </section>
 {% endblock %}

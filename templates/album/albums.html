@@ -4,16 +4,22 @@
 
 {% block content %}
     <div class="page-title">
-        <span class="eyebrow">DISCOVER</span>
+        <span class="eyebrow">YOUR MUSIC LIBRARY</span>
         <h1>Albums</h1>
-        <p>Browse albums and find something to play.</p>
+        <p>Explore albums and discover music from your favorite artists.</p>
     </div>
-    <div class="card-grid album-grid">
-        {% for album in albums %}
-            {% include "components/album_card.html" with album=album %}
-        {% empty %}
-            <p>No albums available yet.</p>
-        {% endfor %}
-    </div>
-    {% include "components/pagination.html" %}
+
+    <section class="content-section">
+        <div class="card-grid">
+            {% for album in albums %}
+                {% include "components/album_card.html" with album=album %}
+            {% empty %}
+                <div class="empty-state">
+                    <div class="empty-icon">♫</div>
+                    <h2>No albums yet</h2>
+                    <p>Albums will appear here when they are added.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
 {% endblock %}

@@ -9,7 +9,9 @@
             <h1>Find your next<br><span>favorite song.</span></h1>
             <p>Explore music, discover artists, and build your personal collection.</p>
             {# The search route does not exist yet; the topbar search form remains available. #}
-            <a href="#" class="button button-primary">Explore music</a>
+            <a href="{% url 'music:song_list' %}" class="button button-primary">
+            Explore music
+            </a>        
         </div>
         <div class="hero-art"><div class="hero-disc">♪</div></div>
     </div>
@@ -27,7 +29,10 @@
     </section>
 
     <section class="content-section">
-        <div class="section-heading"><h2>Popular albums</h2><a href="#" class="see-all">See all</a></div>
+        <div class="section-heading"><h2>Popular albums</h2><a href="{% url 'music:album_list' %}" class="see-all">
+                See all
+            </a>
+    </div>
         {# TODO: Add a named albums route for the See all link. #}
         <div class="card-grid">
             {% for album in popular_albums %}

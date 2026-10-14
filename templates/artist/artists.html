@@ -6,14 +6,20 @@
     <div class="page-title">
         <span class="eyebrow">DISCOVER</span>
         <h1>Artists</h1>
-        <p>Explore artists from your music collection.</p>
+        <p>Explore artists and find their songs and albums.</p>
     </div>
-    <div class="artist-grid">
-        {% for artist in artists %}
-            {% include "components/artist_card.html" with artist=artist %}
-        {% empty %}
-            <p>No artists available yet.</p>
-        {% endfor %}
-    </div>
-    {% include "components/pagination.html" %}
+
+    <section class="content-section">
+        <div class="artist-grid">
+            {% for artist in artists %}
+                {% include "components/artist_card.html" with artist=artist %}
+            {% empty %}
+                <div class="empty-state">
+                    <div class="empty-icon">♫</div>
+                    <h2>No artists yet</h2>
+                    <p>Artists will appear here when they are added.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
 {% endblock %}

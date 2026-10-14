@@ -91,7 +91,89 @@ def search(request):
     return render(request, "search/search.html", context)
 
 
+def album_list(request):
+    albums = (
+        Album.objects
+        .select_related("artist")
+        .all()
+    )
 
+    return render(
+        request,
+        "album/albums.html",
+        {"albums": albums},
+    )
+
+
+def album_detail(request, slug):
+    album = get_object_or_404(
+        Album.objects.select_related("artist"),
+        slug=slug,
+    )
+
+    songs = (
+        album.songs
+        .select_related("artist", "album", "genre")
+        .all()
+    )
+
+    context = {
+        "album": album,
+        "songs": songs,
+        "favorite_song_ids": get_favorite_song_ids(request),
+    }
+
+    return render(
+        request,
+        "album/album-detail.html",
+        context,
+    )
+
+
+def artist_list(request):
+    artists = (
+        Artist.objects
+        .prefetch_related("songs", "albums")
+        .all()
+    )
+
+    return render(
+        request,
+        "artist/artists.html",
+        {"artists": artists},
+    )
+
+
+def artist_detail(request, slug):
+    artist = get_object_or_404(
+        Artist.objects,
+        slug=slug,
+    )
+
+    songs = (
+        artist.songs
+        .select_related("artist", "album", "genre")
+        .all()
+    )
+
+    albums = (
+        artist.albums
+        .select_related("artist")
+        .all()
+    )
+
+    context = {
+        "artist": artist,
+        "songs": songs,
+        "albums": albums,
+        "favorite_song_ids": get_favorite_song_ids(request),
+    }
+
+    return render(
+        request,
+        "artist/artist-detail.html",
+        context,
+    )
 
 
 def song_list(request):

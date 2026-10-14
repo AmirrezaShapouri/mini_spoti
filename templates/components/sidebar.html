@@ -25,19 +25,28 @@
             <span>Your Library</span>
             <button class="icon-button small" type="button" aria-label="Create playlist">+</button>
         </div>
-        {# TODO: Add a named albums route before linking this navigation item. #}
-        <a class="library-item" href="#">Albums</a>
-        {# TODO: Add a named artists route before linking this navigation item. #}
-        <a class="library-item" href="#">Artists</a>
+        <a
+        class="library-item{% if request.resolver_match.url_name == 'album_list' %} active-library{% endif %}"
+        href="{% url 'music:album_list' %}"
+        >
+        Albums
+        </a>
+
+        <a
+        class="library-item{% if request.resolver_match.url_name == 'artist_list' %} active-library{% endif %}"
+        href="{% url 'music:artist_list' %}"
+        >
+        Artists
+        </a>
     </div>
     <div class="sidebar-footer">
         {% if request.user.is_authenticated %}
             <span class="text-link">{{ request.user.username }}</span>
         {% else %}
             {# TODO: Add a named login route before linking account navigation. #}
-            <a href="#" class="text-link">Log in</a>
+            <a href="{% url "accounts:login" %}" class="text-link">Log in</a>
             {# TODO: Add a named registration route before linking account navigation. #}
-            <a href="#" class="button button-outline full-width">Sign up</a>
+            <a href="{% url "accounts:register" %}" class="button button-outline full-width">Sign up</a>
         {% endif %}
     </div>
 </aside>

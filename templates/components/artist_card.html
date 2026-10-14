@@ -1,6 +1,9 @@
 {% load static %}
 {# TODO: Replace the placeholder href with a named artist-detail URL when one exists. #}
-<a href="#" class="artist-card" data-detail-slug="{{ artist.slug }}">
+<a
+    href="{% url 'music:artist_detail' artist.slug %}"
+    class="artist-card"
+>
     {% if artist.image %}
         <img src="{{ artist.image.url }}" alt="{{ artist.name }}">
     {% else %}
