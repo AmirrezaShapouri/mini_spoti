@@ -1,9 +1,10 @@
-from django.db.models import F
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, render,redirect
-from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-from .models import Song,Favorite
+from django.db.models import F, Q
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
+
+from .models import Album, Artist, Favorite, Song
 
 def get_favorite_song_ids(request):
 
@@ -19,6 +20,79 @@ def get_favorite_song_ids(request):
             flat=True,
         )
     )
+
+
+
+def search(request):
+    query = request.GET.get("q", "").strip()
+
+    selected_type = request.GET.get("type", "all")
+
+    allowed_types = {"all", "songs", "artists", "albums"}
+
+    if selected_type not in allowed_types:
+        selected_type = "all"
+
+    songs = Song.objects.none()
+    albums = Album.objects.none()
+    artists = Artist.objects.none()
+
+    if query:
+        if selected_type in {"all", "songs"}:
+            songs = (
+                Song.objects
+                .filter(
+                    Q(title__icontains=query)
+                    | Q(artist__name__icontains=query)
+                    | Q(album__title__icontains=query)
+                    | Q(genre__name__icontains=query)
+                )
+                .select_related("artist", "album", "genre")
+                .order_by("-plays", "title")
+            )
+
+        if selected_type in {"all", "albums"}:
+            albums = (
+                Album.objects
+                .filter(
+                    Q(title__icontains=query)
+                    | Q(artist__name__icontains=query)
+                )
+                .select_related("artist")
+                .order_by("title")
+            )
+
+        if selected_type in {"all", "artists"}:
+            artists = (
+                Artist.objects
+                .filter(
+                    Q(name__icontains=query)
+                    | Q(bio__icontains=query)
+                )
+                .order_by("name")
+            )
+
+    result_count = (
+        songs.count()
+        + albums.count()
+        + artists.count()
+    )
+
+    context = {
+        "query": query,
+        "selected_type": selected_type,
+        "songs": songs,
+        "albums": albums,
+        "artists": artists,
+        "result_count": result_count,
+        "favorite_song_ids": get_favorite_song_ids(request),
+    }
+
+    return render(request, "search/search.html", context)
+
+
+
+
 
 def song_list(request):
     songs = (

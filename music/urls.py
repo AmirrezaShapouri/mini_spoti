@@ -5,6 +5,8 @@ from .views import *
 app_name = "music"
 
 urlpatterns = [
+    path("search/", search, name="search"),
+
     path(
         "songs/",
         song_list,

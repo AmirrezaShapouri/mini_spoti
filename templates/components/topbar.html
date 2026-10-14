@@ -1,28 +1,39 @@
 <header class="topbar">
-    <div class="history-buttons">
-<div class="nav-auth-actions">
-    {% if user.is_authenticated %}
-        <form
-            method="post"
-            action="{% url 'accounts:logout' %}"
-            class="nav-logout-form"
-        >
-            {% csrf_token %}
-            <button type="submit" class="nav-logout-button">
-                <span class="nav-logout-icon" aria-hidden="true">↪</span>
-                <span>Log out</span>
-            </button>
-        </form>
-    {% else %}
-        <a href="{% url 'accounts:login' %}" class="nav-auth-link">
-            Log in
-        </a>
-        <a
-            href="{% url 'accounts:register' %}"
-            class="nav-auth-link nav-auth-register"
-        >
-            Sign up
-        </a>
-    {% endif %}
-</div>
+    {% include "components/search_bar.html" %}
+
+    <div class="topbar-actions">
+        <div class="nav-auth-actions">
+            {% if request.user.is_authenticated %}
+                <form
+                    method="post"
+                    action="{% url 'accounts:logout' %}"
+                    class="nav-logout-form"
+                >
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="nav-logout-button"
+                    >
+                        <span aria-hidden="true">↪</span>
+                        <span>Log out</span>
+                    </button>
+                </form>
+            {% else %}
+                <a
+                    href="{% url 'accounts:login' %}"
+                    class="nav-auth-link"
+                >
+                    Log in
+                </a>
+
+                <a
+                    href="{% url 'accounts:register' %}"
+                    class="nav-auth-link nav-auth-register"
+                >
+                    Sign up
+                </a>
+            {% endif %}
+        </div>
+    </div>
 </header>

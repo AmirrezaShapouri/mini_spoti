@@ -8,39 +8,103 @@
         <h1>Find your music</h1>
         <p>Search for songs, artists, and albums.</p>
     </div>
-    <div class="search-categories">
-        <button class="search-category active" type="button">Songs</button>
-        <button class="search-category" type="button">Artists</button>
-        <button class="search-category" type="button">Albums</button>
-    </div>
-    <div class="content-section">
-        <div class="section-heading"><h2>Song results</h2></div>
-        <div class="song-list">
-            {% for song in songs %}
-                {% include "components/song_row.html" with song=song %}
-            {% empty %}
-                <p>No songs found.</p>
-            {% endfor %}
+
+    {% if query %}
+        <div class="search-categories">
+            <a
+                class="search-category{% if selected_type == 'all' %} active{% endif %}"
+                href="{% url 'music:search' %}?q={{ query|urlencode }}&type=all"
+            >
+                All
+            </a>
+
+            <a
+                class="search-category{% if selected_type == 'songs' %} active{% endif %}"
+                href="{% url 'music:search' %}?q={{ query|urlencode }}&type=songs"
+            >
+                Songs
+            </a>
+
+            <a
+                class="search-category{% if selected_type == 'artists' %} active{% endif %}"
+                href="{% url 'music:search' %}?q={{ query|urlencode }}&type=artists"
+            >
+                Artists
+            </a>
+
+            <a
+                class="search-category{% if selected_type == 'albums' %} active{% endif %}"
+                href="{% url 'music:search' %}?q={{ query|urlencode }}&type=albums"
+            >
+                Albums
+            </a>
         </div>
-    </div>
-    <div class="content-section">
-        <div class="section-heading"><h2>Album results</h2></div>
-        <div class="card-grid">
-            {% for album in albums %}
-                {% include "components/album_card.html" with album=album %}
-            {% empty %}
-                <p>No albums found.</p>
-            {% endfor %}
+
+        <p class="search-result-summary">
+            {{ result_count }} result{{ result_count|pluralize }}
+            for <strong>{{ query }}</strong>
+        </p>
+
+        {% if result_count %}
+            {% if selected_type == 'all' or selected_type == 'songs' %}
+                <section class="content-section">
+                    <div class="section-heading">
+                        <h2>Songs</h2>
+                    </div>
+
+                    <div class="song-list">
+                        {% for song in songs %}
+                            {% include "components/song_row.html" with song=song %}
+                        {% empty %}
+                            <p>No matching songs.</p>
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+
+            {% if selected_type == 'all' or selected_type == 'albums' %}
+                <section class="content-section">
+                    <div class="section-heading">
+                        <h2>Albums</h2>
+                    </div>
+
+                    <div class="card-grid">
+                        {% for album in albums %}
+                            {% include "components/album_card.html" with album=album %}
+                        {% empty %}
+                            <p>No matching albums.</p>
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+
+            {% if selected_type == 'all' or selected_type == 'artists' %}
+                <section class="content-section">
+                    <div class="section-heading">
+                        <h2>Artists</h2>
+                    </div>
+
+                    <div class="artist-grid">
+                        {% for artist in artists %}
+                            {% include "components/artist_card.html" with artist=artist %}
+                        {% empty %}
+                            <p>No matching artists.</p>
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">⌕</div>
+                <h2>No results found</h2>
+                <p>Try another song, artist, or album name.</p>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">⌕</div>
+            <h2>Search Mini Spoti</h2>
+            <p>Use the search bar above to discover music.</p>
         </div>
-    </div>
-    <div class="content-section">
-        <div class="section-heading"><h2>Artist results</h2></div>
-        <div class="artist-grid">
-            {% for artist in artists %}
-                {% include "components/artist_card.html" with artist=artist %}
-            {% empty %}
-                <p>No artists found.</p>
-            {% endfor %}
-        </div>
-    </div>
+    {% endif %}
 {% endblock %}
