@@ -1084,3 +1084,35 @@ a { color: inherit; text-decoration: none; }
         transform: scale(1);
     }
 }
+
+
+.row-favorite {
+    border: 0;
+    background: transparent;
+    color: #8b8b8b;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+    padding: 6px;
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.row-favorite:hover {
+    color: #ffffff;
+    transform: scale(1.08);
+}
+
+.row-favorite.is-favorite {
+    color: #1ed760;
+}
+
+.row-favorite.is-favorite:hover {
+    color: #1ed760;
+}
+
+.row-favorite[data-loading="true"] {
+    pointer-events: none;
+    opacity: 0.6;
+}

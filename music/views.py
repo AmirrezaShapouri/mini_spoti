@@ -5,26 +5,72 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from .models import Song,Favorite
 
+def get_favorite_song_ids(request):
+
+
+    if not request.user.is_authenticated:
+        return set()
+
+    return set(
+        Favorite.objects.filter(
+            user=request.user
+        ).values_list(
+            "song_id",
+            flat=True,
+        )
+    )
 
 def song_list(request):
-    songs = Song.objects.select_related("artist","album","genre").all()
+    songs = (
+        Song.objects
+        .select_related("artist", "album", "genre")
+        .all()
+    )
+
+    context = {
+        "songs": songs,
+        "favorite_song_ids": get_favorite_song_ids(request),
+    }
 
     return render(
-        request,"song/songs.html",{"songs": songs})
+        request,
+        "song/songs.html",
+        context,
+    )
+
 
 
 def song_detail(request, slug):
-    song = get_object_or_404(Song.objects.select_related("artist","album","genre"), slug=slug,)
+    song = get_object_or_404(
+        Song.objects.select_related(
+            "artist",
+            "album",
+            "genre",
+        ),
+        slug=slug,
+    )
 
     related_songs = (
-        Song.objects.select_related("artist", "album")
+        Song.objects
+        .select_related("artist", "album")
         .filter(artist=song.artist)
         .exclude(pk=song.pk)[:6]
     )
 
+    context = {
+        "song": song,
+        "related_songs": related_songs,
+        "favorite_song_ids": get_favorite_song_ids(request),
+    }
+
     return render(
-        request, "song/song-detail.html", {"song": song,"related_songs": related_songs},
+        request,
+        "song/song-detail.html",
+        context,
     )
+
+
+
 
 
 @require_POST
@@ -42,6 +88,8 @@ def increment_plays(request, slug):
     )
 
 
+
+
 @login_required
 @require_POST
 def toggle_favorite(request, slug):
@@ -54,11 +102,19 @@ def toggle_favorite(request, slug):
 
     if favorite:
         favorite.delete()
+        is_favorite = False
     else:
         Favorite.objects.create(
             user=request.user,
             song=song,
         )
+        is_favorite = True
+
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        return JsonResponse({
+            "success": True,
+            "is_favorite": is_favorite,
+        })
 
     return redirect(request.META.get("HTTP_REFERER", "home"))
 
@@ -78,8 +134,15 @@ def favorite_list(request):
 
     songs = [favorite.song for favorite in favorites]
 
+    favorite_song_ids = set(
+        favorites.values_list("song_id", flat=True)
+    )
+
     return render(
         request,
         "favorites/favorites.html",
-        {"songs": songs},
+        {
+            "songs": songs,
+            "favorite_song_ids": favorite_song_ids,
+        },
     )

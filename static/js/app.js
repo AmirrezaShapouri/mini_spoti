@@ -241,3 +241,83 @@ document.addEventListener("DOMContentLoaded", () => {
             : null;
     }
 });
+
+
+document.addEventListener("click", async (event) => {
+    const favoriteButton = event.target.closest(".row-favorite");
+
+    if (!favoriteButton) {
+        return;
+    }
+
+    event.preventDefault();
+
+    const slug = favoriteButton.dataset.songSlug;
+
+    if (!slug) {
+        return;
+    }
+
+    if (favoriteButton.dataset.loading === "true") {
+        return;
+    }
+
+    favoriteButton.dataset.loading = "true";
+
+    try {
+        const response = await fetch(
+            `/music/songs/${slug}/favorite/`,
+            {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("Failed to update favorite.");
+        }
+
+        const data = await response.json();
+
+        if (data.is_favorite) {
+            favoriteButton.classList.add("is-favorite");
+
+            favoriteButton.querySelector(
+                ".favorite-icon"
+            ).textContent = "♥";
+
+            favoriteButton.setAttribute(
+                "aria-label",
+                "Remove from favorites"
+            );
+
+            favoriteButton.setAttribute(
+                "aria-pressed",
+                "true"
+            );
+        } else {
+            favoriteButton.classList.remove("is-favorite");
+
+            favoriteButton.querySelector(
+                ".favorite-icon"
+            ).textContent = "♡";
+
+            favoriteButton.setAttribute(
+                "aria-label",
+                "Add to favorites"
+            );
+
+            favoriteButton.setAttribute(
+                "aria-pressed",
+                "false"
+            );
+        }
+    } catch (error) {
+        console.error("Favorite error:", error);
+    } finally {
+        favoriteButton.dataset.loading = "false";
+    }
+});
