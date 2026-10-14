@@ -13,7 +13,7 @@
         <span>{{ song.artist.name }}</span>
     </div>
     <span class="track-album">{% if song.album %}{{ song.album.title }}{% else %}Single{% endif %}</span>
-    <span class="track-duration">{{ song.duration_display|default:song.duration }}</span>
+    <span class="track-duration">{{ song.duration_display }}</span>    
     {% if not hide_favorite %}
         <button class="heart-button{% if song.is_favorite %} liked{% endif %}" type="button" aria-label="Like {{ song.title }}" data-song-slug="{{ song.slug }}">
             {% if song.is_favorite %}♥{% else %}♡{% endif %}

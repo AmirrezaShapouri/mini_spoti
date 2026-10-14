@@ -114,6 +114,11 @@ class Song(models.Model):
 
         super().save(*args, **kwargs)
 
+    @property
+    def duration_display(self):
+        minutes, seconds = divmod(self.duration, 60)
+        return f"{minutes}:{seconds:02d}"
+
     def __str__(self):
         return self.title
 

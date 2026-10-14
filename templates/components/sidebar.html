@@ -1,8 +1,8 @@
 {% load static %}
 <aside class="sidebar">
     <div class="brand">
-        <div class="brand-mark">M</div>
-        <span>Mini Spoti</span>
+        <a href="{% url "home" %}"><div class="brand-mark">M</div></a>
+        <a href="{% url "home" %}"><span>Mini Spoti</span></a>
     </div>
     <nav class="main-nav" aria-label="Main navigation">
         <a class="nav-link{% if request.resolver_match.url_name == 'home' %} active{% endif %}" href="{% url 'home' %}">

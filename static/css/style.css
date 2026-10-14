@@ -729,3 +729,358 @@ a { color: inherit; text-decoration: none; }
         font-size: 12px;
     }
 }
+
+
+/* ========================================
+   Favorites Page
+======================================== */
+
+.favorites-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 0 80px;
+}
+
+/* Hero */
+
+.favorites-hero {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 42px;
+    margin-bottom: 35px;
+    border-radius: 20px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(30, 215, 96, 0.22),
+            rgba(30, 30, 30, 0.96) 55%
+        );
+    border: 1px solid rgba(30, 215, 96, 0.16);
+}
+
+.favorites-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 105px;
+    height: 105px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    background: linear-gradient(145deg, #1ed760, #0f8f42);
+    color: #ffffff;
+    font-size: 48px;
+    box-shadow: 0 15px 35px rgba(30, 215, 96, 0.22);
+}
+
+.favorites-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #1ed760;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+}
+
+.favorites-hero h1 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 42px;
+    line-height: 1.15;
+    letter-spacing: -1.5px;
+}
+
+.favorites-hero p {
+    margin: 10px 0 0;
+    color: #a7a7a7;
+    font-size: 15px;
+}
+
+/* Toolbar */
+
+.favorites-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    padding: 0 8px;
+}
+
+.favorites-toolbar h2 {
+    margin: 0 0 4px;
+    color: #ffffff;
+    font-size: 21px;
+}
+
+.favorites-toolbar span {
+    color: #888888;
+    font-size: 13px;
+}
+
+/* Song list */
+
+.favorites-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.favorite-item {
+    display: grid;
+    grid-template-columns: minmax(260px, 1fr) minmax(160px, 0.7fr) 60px 44px 48px;
+    align-items: center;
+    gap: 16px;
+    min-height: 76px;
+    padding: 10px 14px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    transition: background 0.2s;
+}
+
+.favorite-item:hover {
+    background: #1c1c1c;
+}
+
+.favorite-item-main {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 14px;
+}
+
+.favorite-cover {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    object-fit: cover;
+    border-radius: 7px;
+}
+
+.favorite-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 5px;
+}
+
+.favorite-title {
+    overflow: hidden;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.favorite-title:hover {
+    color: #1ed760;
+}
+
+.favorite-artist {
+    overflow: hidden;
+    color: #929292;
+    font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.favorite-album {
+    overflow: hidden;
+    color: #a5a5a5;
+    font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.favorite-duration {
+    color: #999999;
+    font-size: 13px;
+    text-align: center;
+}
+
+.favorite-remove-form {
+    margin: 0;
+}
+
+.favorite-remove,
+.favorite-play {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.favorite-remove {
+    background: transparent;
+    color: #1ed760;
+    font-size: 18px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.favorite-remove:hover {
+    background: rgba(30, 215, 96, 0.12);
+    color: #3be477;
+}
+
+.favorite-play {
+    background: #1ed760;
+    color: #000000;
+    font-size: 13px;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.2s, transform 0.2s, background 0.2s;
+}
+
+.favorite-item:hover .favorite-play {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.favorite-play:hover {
+    background: #3be477;
+}
+
+/* Empty state */
+
+.favorites-empty {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 390px;
+    padding: 50px 20px;
+    box-sizing: border-box;
+    border: 1px solid #292929;
+    border-radius: 18px;
+    background: #171717;
+    text-align: center;
+}
+
+.favorites-empty-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 78px;
+    height: 78px;
+    margin-bottom: 20px;
+    border-radius: 50%;
+    background: #242424;
+    color: #1ed760;
+    font-size: 38px;
+}
+
+.favorites-empty h2 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 24px;
+}
+
+.favorites-empty p {
+    margin: 10px 0 25px;
+    color: #888888;
+    font-size: 14px;
+}
+
+.favorites-browse-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 22px;
+    border-radius: 999px;
+    background: #1ed760;
+    color: #000000;
+    font-size: 14px;
+    font-weight: 800;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.favorites-browse-button:hover {
+    background: #3be477;
+    transform: translateY(-1px);
+}
+
+/* Responsive */
+
+@media (max-width: 800px) {
+    .favorites-page {
+        padding: 20px 0 60px;
+    }
+
+    .favorites-hero {
+        padding: 28px;
+    }
+
+    .favorites-icon {
+        width: 85px;
+        height: 85px;
+        font-size: 38px;
+    }
+
+    .favorites-hero h1 {
+        font-size: 32px;
+    }
+
+    .favorite-item {
+        grid-template-columns: minmax(0, 1fr) 50px 44px 42px;
+    }
+
+    .favorite-album {
+        display: none;
+    }
+}
+
+@media (max-width: 560px) {
+    .favorites-hero {
+        gap: 18px;
+        padding: 22px;
+    }
+
+    .favorites-icon {
+        width: 68px;
+        height: 68px;
+        font-size: 30px;
+    }
+
+    .favorites-hero h1 {
+        font-size: 26px;
+    }
+
+    .favorites-hero p {
+        font-size: 13px;
+    }
+
+    .favorite-item {
+        grid-template-columns: minmax(0, 1fr) 44px 40px;
+        gap: 8px;
+    }
+
+    .favorite-duration {
+        display: none;
+    }
+
+    .favorite-cover {
+        width: 48px;
+        height: 48px;
+    }
+
+    .favorite-title {
+        font-size: 13px;
+    }
+
+    .favorite-artist {
+        font-size: 12px;
+    }
+
+    .favorite-play {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
